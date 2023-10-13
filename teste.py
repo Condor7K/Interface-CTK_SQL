@@ -149,11 +149,11 @@ def query():
         conexao = mdb.connect(host="localhost", user="root", password="teste", db="comercio")
         cursor = conexao.cursor()
 
-        cursor.execute('SELECT DISTINCT * FROM estoque')  # Use DISTINCT para trazer apenas valores únicos
+        cursor.execute('SELECT DISTINCT * FROM estoque')
         estoque = cursor.fetchall()
 
         if len(estoque) > 0:
-            resultado = "Listando itens:\n\n"
+            resultado = ""
             for produto in estoque:
                 resultado += f'Código do produto: {produto[0]}\n'
                 resultado += f'Produto: {produto[1]}\n'
@@ -315,7 +315,7 @@ def return_janelapcp():
 # Função para criar a interface inicial
 def criar_widgets():
 
-    global entry_nome
+    global entry_nome   # Declare a variável como global para todo o código
     global entry_senha
     global entry_tipo_user
 
