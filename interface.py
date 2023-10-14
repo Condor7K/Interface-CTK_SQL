@@ -4,9 +4,12 @@ import tkinter as tk
 import tkinter
 import MySQLdb as mdb
 from tkinter import messagebox
-from tkinter import PhotoImage
-from PIL import Image, ImageTk
 from PIL import Image
+import mysql.connector
+import pandas as pd
+from reportlab.lib import colors
+from reportlab.lib.pagesizes import letter
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle
 
 # Configuração da janela principal
 ctk.set_appearance_mode("dark")
@@ -24,6 +27,7 @@ entry_nome = None  # variáveis globais
 entry_senha = None
 entry_tipo_user = None
 entry_tipo_adm = None
+escolha = None
 
 # Função de login de usuário
 def login_scc():
@@ -67,6 +71,24 @@ def janela_principalpcp():
     frame_lateral = tk.Frame(janela_principal, width=155, height=400, bg="#212020")
     frame_lateral.place(x=0, y=0)
 
+    optionmenu = ctk.CTkOptionMenu(janela_principal,
+                                   values=["Mercearia", "Laticinios", "Limpeza", "Higiene", "Bebidas", "Papelaria",
+                                           "Confeitaria"],
+                                   width=155,
+                                   height=18,
+                                   font=("Roboto", 12),
+                                   corner_radius=7,
+                                   dropdown_font=("Roboto", 12))
+    optionmenu.place(x=350, y=450)
+
+    button = ctk.CTkButton(janela_principal,
+                           text="Atualizar Estoque",
+                           command=lambda: atualizar_estoque(optionmenu),
+                           width=100,
+                           height=35,
+                           font=("Roboto", 15),
+                           fg_color="#212020")
+    button.place(x=600, y=550)
 
     # OptionMenu 1
     botao_mostrar = ctk.CTkButton(janela_principal,
@@ -75,7 +97,7 @@ def janela_principalpcp():
                                   height=15,
                                   font=("Roboto", 13),
                                   fg_color="transparent",
-                                  command=lambda: option1(textbox, textbox_visible))
+                                  command=lambda: option1(textbox, textbox_visible, button, button_visible, optionmenu, optionmenu_visible))
     botao_mostrar.place(x=3, y=45)
 
     textbox = ctk.CTkTextbox(janela_principal, width=450, height=250, corner_radius=1) # Widht = largura / height = altura
@@ -123,9 +145,11 @@ def janela_principalpcp():
 
     janela_principal.mainloop()
 
-def option1(textbox, textbox_visible):
+def option1(textbox, textbox_visible, button, button_visible, optionmenu, optionmenu_visible):
     if textbox_visible.get():
-        textbox.place_forget()  # Remove o Textbox da janela
+        textbox.place_forget()
+        button.place_forget()
+        optionmenu.place_forget()
     else:
         textbox.place(x=160, y=0)
         textbox.configure(state="normal")
@@ -134,32 +158,55 @@ def option1(textbox, textbox_visible):
         textbox.insert("1.0", resultado)
         textbox.configure(state="disabled")
 
+        button.place(x=160, y=300)
+        optionmenu.place(x=160, y=250)
+
+    optionmenu_visible.set(not optionmenu_visible.get())
+    button_visible.set(not button_visible.get())
     textbox_visible.set(not textbox_visible.get())
 
 textbox_visible = tk.BooleanVar()
 textbox_visible.set(False)
 
+button_visible = tk.BooleanVar()
+button_visible.set(False)
+
+optionmenu_visible = tk.BooleanVar()
+optionmenu_visible.set(False)
+
+
+def hide_button1(botao, button_visible):
+    if button_visible.get():
+        botao.place_forget()
+    else:
+        botao.place(x=0, y=300)
+        botao.configure(state="disabled")
+    button_visible.set(not textbox_visible.get())
+button_visible = tk.BooleanVar()
+button_visible.set(False)
 
 
 def hide_textbox(textbox):
     textbox.pack_forget()
+
 
 def query():
     try:
         conexao = mdb.connect(host="localhost", user="root", password="teste", db="comercio")
         cursor = conexao.cursor()
 
-        cursor.execute('SELECT DISTINCT * FROM estoque')  # Use DISTINCT para trazer apenas valores únicos
+        cursor.execute('SELECT DISTINCT * FROM estoque')
         estoque = cursor.fetchall()
 
         if len(estoque) > 0:
-            resultado = "Listando itens:\n\n"
+            resultado = ""
             for produto in estoque:
                 resultado += f'Código do produto: {produto[0]}\n'
                 resultado += f'Produto: {produto[1]}\n'
-                resultado += f'Quantidade em estoque: {produto[2]}\n'
-                resultado += f'Preço de venda: {produto[3]}\n'
-                resultado += f'Data de entrada: {produto[4]}\n\n'
+                resultado += f'Setor: {produto[2]}\n'
+                resultado += f'Quantidade em estoque: {produto[3]}\n'
+                resultado += f'Preço de venda: {produto[4]}\n'
+                resultado += f'Data de entrada: {produto[5]}\n\n'
             return resultado
         else:
             return "Nenhum produto encontrado."
@@ -170,7 +217,7 @@ def query():
 
 
 def option2():
-    hide_textbox()
+    # Criar Função de insert de registro
     popup2 = ctk.CTk()
     popup2.geometry("300x150")
     popup2.title("Janela Pop-up 2")
@@ -178,13 +225,33 @@ def option2():
     popup2.mainloop()
 
 def option3():
+    # Criar função de alteração de registro
     popup3 = ctk.CTk()
     popup3.geometry("300x150")
     popup3.title("Janela Pop-up 3")
 
     popup3.mainloop()
 
-def option4():
+
+def on_option_select(selected_option):
+    # Aqui você pode adicionar a lógica para atualizar o estoque com base na opção selecionada
+    print(f"Opção selecionada: {selected_option}")
+
+def atualizar_estoque(optionmenu):
+    # Aqui você chama a função on_option_select e passa a opção selecionada
+    selected_option = optionmenu.get()
+    on_option_select(selected_option)
+
+def option5():
+    # Criar Função de exportação de registros como arquivo PDF / CSV
+    popup4 = ctk.CTk()
+    popup4.geometry("300x150")
+    popup4.title("Janela Pop-up 4")
+
+    popup4.mainloop()
+
+def option6():
+    # Criar Função para atualização de registro
     popup4 = ctk.CTk()
     popup4.geometry("300x150")
     popup4.title("Janela Pop-up 4")
@@ -315,7 +382,7 @@ def return_janelapcp():
 # Função para criar a interface inicial
 def criar_widgets():
 
-    global entry_nome
+    global entry_nome   # Declare a variável como global para todo o código
     global entry_senha
     global entry_tipo_user
 

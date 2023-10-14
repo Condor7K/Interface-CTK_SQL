@@ -1,24 +1,26 @@
-CREATE DATABASE comercio;
+# mercearia frios_laticinios higiene_limpeza doces_achocolatados bebidas cmb
 
-USE comercio;
-
-CREATE TABLE usuarios (
-		ID INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
-        usuario varchar(50) NOT NULL,
-        senha varchar(50) NOT NULL,
-        tipo_user varchar(50) NOT NULL
+CREATE TABLE estoque (
+    id_codigo INT AUTO_INCREMENT PRIMARY KEY,
+    produto VARCHAR(255) NOT NULL,
+    setor VARCHAR(255) NOT NULL,
+    quantidade INT NOT NULL,
+    preco DECIMAL(10, 2) NOT NULL,
+    data_insercao TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-DROP TABLE usuarios;
+INSERT INTO estoque (produto, setor, quantidade, preco) VALUES ('Café Pilão 1kg', 'Mercearia', '250', '35.90');
 
-SELECT * FROM usuarios;
+INSERT INTO estoque (produto, setor, quantidade, preco) VALUES ('Leite Integral Piracanjuba 1L', 'laticinios', '358', '5.36');
 
-FLUSH PRIVILEGES;
+INSERT INTO estoque (produto, setor, quantidade, preco) VALUES ('Limpador Perfumado para pisos Casa & Perfume', 'limpeza', '286', '38.96');
 
-GRANT ALL PRIVILEGES ON * . * TO 'user_test'@'localhost'; 
+INSERT INTO estoque (produto, setor, quantidade, preco) VALUES ('Pasta de dentes colgate 90g', 'higiene', '568', '5.99');
 
-CREATE USER 'user_test'@'localhost' IDENTIFIED BY '123';
+INSERT INTO estoque (produto, setor, quantidade, preco) VALUES ('Vodka balalaika 1l', 'bebidas', '379', '19.99');
 
-SHOW GRANTS FOR 'user_test'@'localhost';
-GRANT CREATE USER ON *.* TO 'root'@'localhost';
-DELETE FROM usuarios WHERE ID > 3;
+INSERT INTO estoque (produto, setor, quantidade, preco) VALUES ('Caderno Universitário Barbie 96fls Capa Love To Me', 'papelaria', '250', '19.90');
+
+INSERT INTO estoque (produto, setor, quantidade, preco) VALUES ('Chocolate Kit Kat ao Leite Nestlé', 'confeitaria', '657', '3.99');
+
+DROP TABLE estoque;
