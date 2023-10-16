@@ -27,7 +27,7 @@ entry_nome = None  # variáveis globais
 entry_senha = None
 entry_tipo_user = None
 entry_tipo_adm = None
-escolha = None
+option_Var = None
 
 # Função de login de usuário
 def login_scc():
@@ -83,7 +83,7 @@ def janela_principalpcp():
 
     button = ctk.CTkButton(janela_principal,
                            text="Atualizar Estoque",
-                           command=lambda: atualizar_estoque(optionmenu),
+                           command=lambda: atualizar_estoque(textbox, optionmenu),
                            width=100,
                            height=35,
                            font=("Roboto", 15),
@@ -154,7 +154,8 @@ def option1(textbox, textbox_visible, button, button_visible, optionmenu, option
         textbox.place(x=160, y=0)
         textbox.configure(state="normal")
         textbox.delete("1.0", "end")
-        resultado = query()
+        selected_option = optionmenu.get()
+        resultado = query(selected_option)
         textbox.insert("1.0", resultado)
         textbox.configure(state="disabled")
 
@@ -175,27 +176,12 @@ optionmenu_visible = tk.BooleanVar()
 optionmenu_visible.set(False)
 
 
-def hide_button1(botao, button_visible):
-    if button_visible.get():
-        botao.place_forget()
-    else:
-        botao.place(x=0, y=300)
-        botao.configure(state="disabled")
-    button_visible.set(not textbox_visible.get())
-button_visible = tk.BooleanVar()
-button_visible.set(False)
-
-
-def hide_textbox(textbox):
-    textbox.pack_forget()
-
-
-def query():
+def query(selected_option):
     try:
-        conexao = mdb.connect(host="localhost", user="root", password="teste", db="comercio")
+        conexao = mdb.connect(host="localhost", user="root", password="teste", database="comercio")
         cursor = conexao.cursor()
 
-        cursor.execute('SELECT DISTINCT * FROM estoque')
+        cursor.execute('SELECT * FROM estoque WHERE setor = %s', (selected_option,))
         estoque = cursor.fetchall()
 
         if len(estoque) > 0:
@@ -212,9 +198,36 @@ def query():
             return "Nenhum produto encontrado."
     except mdb.Error as e:
         return f"Erro na consulta: {e}"
+    finally:
+        if conexao:
+            conexao.close()
+
+def on_option_select(selected_option):
+    resultado = query(selected_option)
+    return resultado
+
+def atualizar_estoque(textbox, optionmenu):
+    textbox.configure(state="normal")
+    textbox.delete("1.0", "end")
+    selected_option = optionmenu.get()
+    resultado = query(selected_option)
+    textbox.insert("1.0", resultado)
+    textbox.configure(state="disabled")
 
 
+def hide_button1(botao, button_visible):
+    if button_visible.get():
+        botao.place_forget()
+    else:
+        botao.place(x=0, y=300)
+        botao.configure(state="disabled")
+    button_visible.set(not textbox_visible.get())
+button_visible = tk.BooleanVar()
+button_visible.set(False)
 
+
+def hide_textbox(textbox):
+    textbox.pack_forget()
 
 def option2():
     # Criar Função de insert de registro
@@ -232,15 +245,6 @@ def option3():
 
     popup3.mainloop()
 
-
-def on_option_select(selected_option):
-    # Aqui você pode adicionar a lógica para atualizar o estoque com base na opção selecionada
-    print(f"Opção selecionada: {selected_option}")
-
-def atualizar_estoque(optionmenu):
-    # Aqui você chama a função on_option_select e passa a opção selecionada
-    selected_option = optionmenu.get()
-    on_option_select(selected_option)
 
 def option5():
     # Criar Função de exportação de registros como arquivo PDF / CSV
