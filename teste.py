@@ -34,6 +34,9 @@ def login_scc():
     global entry_nome
     global entry_senha
     global entry_tipo_user
+    global entry_st_visible
+    global entry_qt_visible
+    global entry_pc_visible
 
     usuario = entry_nome.get()
     senha = entry_senha.get()
@@ -97,7 +100,7 @@ def janela_principalpcp():
                                   height=15,
                                   font=("Roboto", 13),
                                   fg_color="transparent",
-                                  command=lambda: option1(textbox, textbox_visible, button, button_visible, optionmenu, optionmenu_visible))
+                                  command=lambda: option1(textbox, textbox_visible, button, button_visible, optionmenu, optionmenu_visible, entry_prd, entry_prd_visible, entry_st, entry_st_visible, entry_qt, entry_qt_visible, entry_pc, entry_pc_visible))
     botao_mostrar.place(x=3, y=45)
 
     textbox = ctk.CTkTextbox(janela_principal, width=450, height=250, corner_radius=1) # Widht = largura / height = altura
@@ -109,8 +112,40 @@ def janela_principalpcp():
                                  height=15,
                                  font=("Roboto", 13),
                                  fg_color="transparent",
-                                 command=option2)
+                                 command=lambda: option2(textbox, button, optionmenu, entry_prd, entry_prd_visible, entry_st, entry_st_visible, entry_qt, entry_qt_visible, entry_pc, entry_pc_visible))
     option_menu2.place(x=3, y=75) # X > numero maior para esquerda, numero menor para direita / Y > numero menor para cima, numero maior para baixo
+
+    entry_prd = customtkinter.CTkEntry(janela_principal,
+                                       placeholder_text="Produto",
+                                       width=115,
+                                       height=20,
+                                       font=("Roboto", 13),
+                                       fg_color="transparent")
+    entry_prd.place(x=700, y=100)
+
+    entry_st = customtkinter.CTkEntry(janela_principal,
+                                      placeholder_text="Setor",
+                                      width=115,
+                                      height=20,
+                                      font=("Roboto", 13),
+                                      fg_color="transparent")
+    entry_st.place(x=700, y=150)
+
+    entry_qt = customtkinter.CTkEntry(janela_principal,
+                                      placeholder_text="Quantidade",
+                                      width=85,
+                                      height=20,
+                                      font=("Roboto", 13),
+                                      fg_color="transparent")
+    entry_qt.place(x=700, y=200)
+
+    entry_pc = customtkinter.CTkEntry(janela_principal,
+                                      placeholder_text="Preço",
+                                      width=85,
+                                      height=20,
+                                      font=("Roboto", 13),
+                                      fg_color="transparent")
+    entry_pc.place(x=700, y=250)
 
     # OptionMenu 3
     option_menu3 = ctk.CTkButton(master=janela_principal,
@@ -145,12 +180,20 @@ def janela_principalpcp():
 
     janela_principal.mainloop()
 
-def option1(textbox, textbox_visible, button, button_visible, optionmenu, optionmenu_visible):
+def option1(textbox, textbox_visible, button, button_visible, optionmenu, optionmenu_visible, entry_prd, entry_prd_visible, entry_st, entry_st_visible, entry_qt, entry_qt_visible, entry_pc, entry_pc_visible):
     if textbox_visible.get():
         textbox.place_forget()
         button.place_forget()
         optionmenu.place_forget()
+        entry_prd.place_forget()
+        entry_st.place_forget()
+        entry_qt.place_forget()
+        entry_pc.place_forget()
     else:
+        entry_prd_visible.set(False)
+        entry_st_visible.set(False)
+        entry_qt_visible.set(False)
+        entry_pc_visible.set(False)
         textbox.place(x=160, y=0)
         textbox.configure(state="normal")
         textbox.delete("1.0", "end")
@@ -174,6 +217,70 @@ button_visible.set(False)
 
 optionmenu_visible = tk.BooleanVar()
 optionmenu_visible.set(False)
+
+def option2(textbox, button, optionmenu, entry_prd, entry_prd_visible, entry_st, entry_st_visible, entry_qt, entry_qt_visible, entry_pc, entry_pc_visible):
+    if entry_prd_visible.get():
+        textbox.place_forget()
+        button.place_forget()
+        optionmenu.place_forget()
+        entry_prd.place_forget()
+        entry_st.place_forget()
+        entry_qt.place_forget()
+        entry_pc.place_forget()
+        entry_prd_visible.set(False)
+        entry_st_visible.set(False)
+        entry_qt_visible.set(False)
+        entry_pc_visible.set(False)
+    else:
+        entry_prd_visible.set(True)
+        entry_st_visible.set(True)
+        entry_qt_visible.set(True)
+        entry_pc_visible.set(True)
+        textbox_visible.set(False)
+        button_visible.set(False)
+        optionmenu_visible.set(False)
+
+        entry_prd.place(x=165, y=0)   # X > numero maior para esquerda, numero menor para direita / Y > numero menor para cima, numero maior para baixo
+        entry_qt.place(x=290, y=0)
+        entry_pc.place(x=385, y=0)
+        entry_st.place(x=490, y=60)
+
+entry_prd_visible = tk.BooleanVar()
+entry_prd_visible.set(False)
+
+entry_st_visible = tk.BooleanVar()
+entry_st_visible.set(False)
+
+entry_qt_visible = tk.BooleanVar()
+entry_qt_visible.set(False)
+
+entry_pc_visible = tk.BooleanVar()
+entry_pc_visible.set(False)
+
+def option3():
+    # Criar função de alteração de registro
+    popup3 = ctk.CTk()
+    popup3.geometry("300x150")
+    popup3.title("Janela Pop-up 3")
+
+    popup3.mainloop()
+
+
+def option5():
+    # Criar Função de exportação de registros como arquivo PDF / CSV
+    popup4 = ctk.CTk()
+    popup4.geometry("300x150")
+    popup4.title("Janela Pop-up 4")
+
+    popup4.mainloop()
+
+def option6():
+    # Criar Função para atualização de registro
+    popup4 = ctk.CTk()
+    popup4.geometry("300x150")
+    popup4.title("Janela Pop-up 4")
+
+    popup4.mainloop()
 
 
 def query(selected_option):
@@ -228,39 +335,6 @@ button_visible.set(False)
 
 def hide_textbox(textbox):
     textbox.pack_forget()
-
-def option2():
-    # Criar Função de insert de registro
-    popup2 = ctk.CTk()
-    popup2.geometry("300x150")
-    popup2.title("Janela Pop-up 2")
-
-    popup2.mainloop()
-
-def option3():
-    # Criar função de alteração de registro
-    popup3 = ctk.CTk()
-    popup3.geometry("300x150")
-    popup3.title("Janela Pop-up 3")
-
-    popup3.mainloop()
-
-
-def option5():
-    # Criar Função de exportação de registros como arquivo PDF / CSV
-    popup4 = ctk.CTk()
-    popup4.geometry("300x150")
-    popup4.title("Janela Pop-up 4")
-
-    popup4.mainloop()
-
-def option6():
-    # Criar Função para atualização de registro
-    popup4 = ctk.CTk()
-    popup4.geometry("300x150")
-    popup4.title("Janela Pop-up 4")
-
-    popup4.mainloop()
 
 # Função de cadastro de usuário
 def cadastro():

@@ -23,4 +23,10 @@ INSERT INTO estoque (produto, setor, quantidade, preco) VALUES ('Caderno Univers
 
 INSERT INTO estoque (produto, setor, quantidade, preco) VALUES ('Chocolate Kit Kat ao Leite Nestlé', 'confeitaria', '657', '3.99');
 
+SELECT * FROM estoque WHERE setor = "Mercearia";
+
+SELECT * FROM estoque;
+
+USE comercio;
+
 DROP TABLE estoque;
